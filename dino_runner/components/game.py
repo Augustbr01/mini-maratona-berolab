@@ -1,7 +1,12 @@
 import pygame
+import random
+
 
 from dino_runner.components.clouds import Cloud
 
+from dino_runner.components.obstacles.bird import Bird
+from dino_runner.components.obstacles.cactus import Cactus
+from dino_runner.components.obstacles.obstacle import Obstacle
 from dino_runner.components.dino import Dino
 from dino_runner.utils import text_utils
 from dino_runner.utils.constants import (
@@ -70,6 +75,20 @@ class Game:
         for cloud in self.clouds: 
             cloud.update(self.game_speed)
 
+        if len(self.obstacles) == 0:
+            if random.randint(0, 1):
+                self.obstacles.append(Bird())
+            else:
+                self.obstacles.append(Cactus())
+        
+        for obstacle in self.obstacles:
+            obstacle.update(self.game_speed, self.obstacles)
+
+            if self.player.rect.colliderect(obstacle.rect):
+                pygame.time.delay(1000)
+                self.running = False
+            
+
 
     ## Desenha os componentes do jogo na tela em ordem de prioridade de cima pra baixo
     ## Primeiro limpa a tela com o fill, depois desenha o background, depois as nuvens, depois o dino
@@ -79,4 +98,8 @@ class Game:
         for cloud in self.clouds:
             cloud.draw(self.screen)
         self.player.draw(self.screen)
+
+        for obstacle in self.obstacles:
+            obstacle.draw(self.screen)
+
         pygame.display.update()
