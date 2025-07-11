@@ -1,10 +1,11 @@
 import pygame
+
 from dino_runner.utils.constants import DUCKING, JUMPING, RUNNING, DEFAULT_TYPE, SHIELD_TYPE
 
 class Dino:
-    X_POS = 80 ## Inicia a posição X do Dino
-    Y_POS = 310 ## Inicia a posição Y do Dino
-    Y_POS_DUCK = 340 ## Inicia a posição Y do Dino quando ele está agachado
+    X_POS = 200 ## Inicia a posição X do Dino
+    Y_POS = 350 ## Inicia a posição Y do Dino
+    Y_POS_DUCK = 380 ## Inicia a posição Y do Dino quando ele está agachado
     JUMP_VEL = 8.5 ## Velocidade do pulo do Dino
 
     def __init__(self): 
@@ -27,6 +28,9 @@ class Dino:
         self.rect = self.image.get_rect()
         self.rect.x = self.X_POS
         self.rect.y = self.Y_POS
+
+        self.rect.width -= 7
+        self.rect.height -= 7
 
     ## Atualiza o estado do dino com base nos inputs do usuário
     def update(self, user_input):
@@ -57,6 +61,7 @@ class Dino:
         ## Atualiza e reseta os passos do dino 
         if self.step_index >= 10: 
             self.step_index = 0
+        
 
         
     def run(self):
@@ -72,8 +77,8 @@ class Dino:
     def jump(self): 
         self.image = self.jump_img ## Atualiza a imagem do dino para a imagem de pulo
         if self.dino_jump:
-            self.rect.y -= self.jump_vel * 4 ## Atualiza a posição Y do dino para cima conforme a velocidade do pulo
-            self.jump_vel -= 0.8 ## Diminui a velocidade do pulo para simular a gravidade
+            self.rect.y -= self.jump_vel * 3.5 ## Atualiza a posição Y do dino para cima conforme a velocidade do pulo
+            self.jump_vel -= 1 ## Diminui a velocidade do pulo para simular a gravidade
 
         if self.jump_vel < -self.JUMP_VEL: ## Se a velocidade do pulo for menor que a velocidade inicial do pulo, o dino vai voltar para a posição normal
             self.dino_jump = False
