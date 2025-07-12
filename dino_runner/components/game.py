@@ -1,9 +1,7 @@
 import pygame
 import random
 
-
 from dino_runner.components.clouds import Cloud
-
 from dino_runner.components.obstacles.bird import Bird
 from dino_runner.components.obstacles.cactus import Cactus
 from dino_runner.components.obstacles.obstacle import Obstacle
@@ -24,6 +22,7 @@ class Game:
         self.clock = pygame.time.Clock() ## FPS do jogo
         self.screen.fill((255, 255, 255))
 
+
         self.running = True
         self.playing = True
          ## Variavel que fala se o jogo tá rodando ou não
@@ -32,17 +31,14 @@ class Game:
         self.obstacles = []
 
         ## Velocidade do Jogo
-        self.game_speed = 30
+        self.game_speed = 20
 
         ## Lista de Nuvens
         self.clouds = [Cloud(), Cloud(), Cloud(), Cloud(), Cloud()]
        
         ## Coordenada inicial do Background
         self.x_pos_bg = 0
-        self.y_pos_bg = 380
-       
-
-
+        self.y_pos_bg = 420
 
     def execute(self):
         while self.running:
@@ -55,7 +51,6 @@ class Game:
                 
             self.clock.tick(FPS)
             self.draw()
-            
 
         pygame.quit() ## Fecha o pygame quando o jogo acaba
             
@@ -75,22 +70,22 @@ class Game:
     def update(self):
         user_input = pygame.key.get_pressed() # Pega os inputs do usuário
         self.player.update(user_input) ## Atualiza o dino com os inputs do usuário
-        
+
         for cloud in self.clouds: 
             cloud.update(self.game_speed)
 
         if len(self.obstacles) == 0:
-            if random.randint(0, 1):
-                self.obstacles.append(Bird())
+            if random.randint(0, 1) == 0:
+                self.obstacles.append(Cactus())      
             else:
-                self.obstacles.append(Cactus())
+                self.obstacles.append(Bird())
         
         for obstacle in self.obstacles:
             obstacle.update(self.game_speed, self.obstacles)
 
             if self.player.rect.colliderect(obstacle.rect):
                 self.playing = False        
-         ## Desenha a imagem do game over na tela
+         
             
     def game_over(self):
         if not self.playing:
@@ -101,11 +96,12 @@ class Game:
              ## Pega a altura da imagem do game over
             self.screen.blit(GAMEOVER, (SCREEN_WIDTH // 2 - image_width // 2, (SCREEN_HEIGHT // 2 - image_height // 2) - 55))
             self.screen.blit(RESET, (SCREEN_WIDTH // 2 - image_reset_width // 2, SCREEN_HEIGHT // 2 - image_reset_height // 2))
+
             mouse_pos = pygame.mouse.get_pos()
             mouse_pressed = pygame.mouse.get_pressed()
             reset_rect = RESET.get_rect()
             reset_rect.topleft = (SCREEN_WIDTH // 2 - image_reset_width // 2, SCREEN_HEIGHT // 2 - image_reset_height // 2 - 10)
-
+            
             # Verifica clique no botão RESET
             if reset_rect.collidepoint(mouse_pos) and mouse_pressed[0]:
                 self.__init__()
@@ -127,7 +123,7 @@ class Game:
 
         for obstacle in self.obstacles:
             obstacle.draw(self.screen)
-
+        
         self.game_over()
         pygame.display.update()
         
